@@ -18,11 +18,20 @@ const PersonaHub = {
    */
   storage: {
     set: (key, value) => {
-      localStorage.setItem(`personaHub_${key}`, JSON.stringify(value));
+      try {
+        localStorage.setItem(`personaHub_${key}`, JSON.stringify(value));
+      } catch (e) {
+        console.error('localStorage 저장 실패:', e);
+      }
     },
     get: (key) => {
-      const item = localStorage.getItem(`personaHub_${key}`);
-      return item ? JSON.parse(item) : null;
+      try {
+        const item = localStorage.getItem(`personaHub_${key}`);
+        return item ? JSON.parse(item) : null;
+      } catch (e) {
+        console.error('JSON 파싱 실패:', e);
+        return null;
+      }
     },
     remove: (key) => {
       localStorage.removeItem(`personaHub_${key}`);
@@ -143,10 +152,10 @@ const PersonaHub = {
   /**
    * 요소 생성 헬퍼
    */
-  createElement: (tag, className, content = '') => {
+  createElement: (tag, className, text = '') => {
     const element = document.createElement(tag);
     if (className) element.className = className;
-    if (content) element.innerHTML = content;
+    if (text) element.textContent = text; // ✅ XSS 방지 (textContent 사용)
     return element;
   },
 

@@ -1,7 +1,32 @@
 const express = require('express');
+const helmet = require('helmet');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// 보안 헤더 설정
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "https://pagead2.googlesyndication.com"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "https:"],
+            fontSrc: ["'self'"],
+            connectSrc: ["'self'"],
+            frameSrc: ["https://pagead2.googlesyndication.com"]
+        }
+    }
+}));
+
+// 추가 보안 헤더
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
+});
 
 // 정적 파일 제공
 app.use(express.static(path.join(__dirname, 'public')));
