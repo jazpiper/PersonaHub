@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "dimension": "idealism_vs_pragmatism",
+    "question": "이상적인 연애를 상상할 때, 어떤 것이 더 중요한가요?",
+    "options": [
+      { "text": "감정적인 연결과 낭만적인 순간", "value": "idealism" },
+      { "text": "현실적인 안정감과 실속 있는 관계", "value": "pragmatism" }
+    ]
+  },
+  {
+    "id": 2,
+    "dimension": "emotion_vs_rationality",
+    "question": "연인과 갈등이 생겼을 때, 어떻게 해결하나요?",
+    "options": [
+      { "text": "감정을 솔직하게 표현하며 이야기한다", "value": "emotion" },
+      { "text": "문제의 원인을 분석하며 논리적으로 해결한다", "value": "rationality" }
+    ]
+  },
+  {
+    "id": 3,
+    "dimension": "independence_vs_dependence",
+    "question": "주말 데이트를 계획할 때, 어떤 스타일을 선호하나요?",
+    "options": [
+      { "text": "내가 원하는 대로 자유롭게 계획한다", "value": "independence" },
+      { "text": "상대방과 함께 계획하고 조율한다", "value": "dependence" }
+    ]
+  },
+  {
+    "id": 4,
+    "dimension": "adventure_vs_stability",
+    "question": "새로운 연애를 시작할 때, 어떤 것을 더 선호하나요?",
+    "options": [
+      { "text": "새로운 경험과 모험을 즐길 수 있는 상대", "value": "adventure" },
+      { "text": "안정적이고 예측 가능한 성향을 가진 상대", "value": "stability" }
+    ]
+  },
+  {
+    "id": 5,
+    "dimension": "curiosity_vs_loyalty",
+    "question": "새로운 사람을 만났을 때, 어떤 생각이 먼저 드나요?",
+    "options": [
+      { "text": "이 사람의 숨겨진 이야기가 궁금하다", "value": "curiosity" },
+      { "text": "현재의 관계를 더 깊이 이해하고 싶다", "value": "loyalty" }
+    ]
+  },
+  {
+    "id": 6,
+    "dimension": "idealism_vs_pragmatism",
+    "question": "상대방이 선물을 고를 때, 어떤 것을 더 선호하나요?",
+    "options": [
+      { "text": "의미와 추억이 담긴 특별한 선물", "value": "idealism" },
+      { "text": "실용적이고 쓸모 있는 선물", "value": "pragmatism" }
+    ]
+  },
+  {
+    "id": 7,
+    "dimension": "emotion_vs_rationality",
+    "question": "상대방의 장래 계획을 들을 때, 어떻게 반응하나요?",
+    "options": [
+      { "text": "감정적으로 공감하고 응원한다", "value": "emotion" },
+      { "text": "현실적으로 검토하고 조언한다", "value": "rationality" }
+    ]
+  },
+  {
+    "id": 8,
+    "dimension": "independence_vs_dependence",
+    "question": "상대방이 연락이 뜸할 때, 어떻게 하나요?",
+    "options": [
+      { "text": "내 할 일에 집중하며 기다린다", "value": "independence" },
+      { "text": "걱정되며 먼저 연락해본다", "value": "dependence" }
+    ]
+  },
+  {
+    "id": 9,
+    "dimension": "adventure_vs_stability",
+    "question": "상대방이 뜬금없는 데이트를 제안했을 때, 어떻게 하나요?",
+    "options": [
+      { "text": "신나게 받아들이고 함께 기획한다", "value": "adventure" },
+      { "text": "일정을 확인하고 정리가 필요한지 생각한다", "value": "stability" }
+    ]
+  },
+  {
+    "id": 10,
+    "dimension": "curiosity_vs_loyalty",
+    "question": "상대방과 관계가 안정되었을 때, 어떤 생각이 드나요?",
+    "options": [
+      { "text": "새로운 세계를 함께 탐험하고 싶다", "value": "curiosity" },
+      { "text": "이 관계를 더 깊고 충실하게 발전시키고 싶다", "value": "loyalty" }
+    ]
+  }
+]

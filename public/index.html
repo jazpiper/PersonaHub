@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PersonaHub - 당신의 진짜 성격을 발견하세요</title>
+  <link rel="stylesheet" href="/common.css">
+  <style>
+    /* 허브 메인 페이지 추가 스타일 */
+    .hero {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      padding: 4rem 1rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2rem;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      background: white;
+      color: var(--primary-color);
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+
+    .hero-cta:hover {
+      transform: scale(1.05);
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: var(--text-primary);
+    }
+
+    .assessment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .assessment-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .assessment-card:hover {
+      transform: translateY(-0.5rem);
+      border-color: var(--secondary-color);
+      box-shadow: 0 8px 24px rgba(0, 212, 170, 0.2);
+    }
+
+    .assessment-card-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .assessment-card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .assessment-card-description {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .assessment-card-meta {
+      display: flex;
+      gap: 1rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .assessment-card-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .featured-badge {
+      background: var(--primary-color);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+
+    .stats-section {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 3rem 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .recent-assessments {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .recent-assessments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .recent-assessment-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background: var(--bg-color);
+      border-radius: 0.5rem;
+    }
+
+    .recent-assessment-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .recent-assessment-icon {
+      font-size: 1.5rem;
+    }
+
+    .recent-assessment-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .recent-assessment-date {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .recent-assessment-result {
+      background: var(--primary-color);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.25rem;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* 광고 컨테이너 */
+    .ad-container {
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      max-width: 728px;
+      margin: 2rem auto;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .ad-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 1.75rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .assessment-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ad-container {
+        max-width: 100%;
+        margin: 1.5rem auto;
+        padding: 0.75rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero 섹션 -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero-title">PersonaHub</h1>
+      <p class="hero-subtitle">당신의 진짜 성격을 발견하세요 - MBTI, 연애, 진로, 투자까지!</p>
+      <a href="#assessments" class="hero-cta">분석 시작하기</a>
+    </div>
+  </section>
+
+  <!-- Hero 섹션 직후 광고 (P0) -->
+  <aside class="ad-container">
+    <div class="ad-label">Sponsored</div>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4896634202351610" crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-4896634202351610"
+         data-ad-slot="5187796078"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </aside>
+
+  <!-- 통계 섹션 -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="totalAssessments">4</div>
+          <div class="stat-label">전체 분석</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="completedAssessments">0</div>
+          <div class="stat-label">완료한 분석</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="totalUsers">10K+</div>
+          <div class="stat-label">누적 참여자</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 분석 섹션 -->
+  <section id="assessments" class="container">
+    <h2 class="section-title">분석 선택하기</h2>
+    <div class="assessment-grid">
+      <!-- MBTI 분석 -->
+      <div class="assessment-card" onclick="startAssessment('mbti')">
+        <div class="featured-badge">인기</div>
+        <div class="assessment-card-icon">🧠</div>
+        <h3 class="assessment-card-title">MBTI 성격 유형</h3>
+        <p class="assessment-card-description">16가지 성격 유형 중 하나를 발견하고 자신을 더 깊이 이해하세요.</p>
+        <div class="assessment-card-meta">
+          <span>⏱️ 12문항</span>
+          <span>👥 5.2K</span>
+        </div>
+      </div>
+
+      <!-- 연애 유형 분석 -->
+      <div class="assessment-card" onclick="startAssessment('love-type')">
+        <div class="featured-badge">인기</div>
+        <div class="assessment-card-icon">❤️</div>
+        <h3 class="assessment-card-title">연애 유형 분석</h3>
+        <p class="assessment-card-description">나의 연애 스타일과 이상적인 파트너 유형을 알아보세요.</p>
+        <div class="assessment-card-meta">
+          <span>⏱️ 10문항</span>
+          <span>👥 3.8K</span>
+        </div>
+      </div>
+
+      <!-- 진로 적성 분석 -->
+      <div class="assessment-card" onclick="startAssessment('career')">
+        <div class="featured-badge">NEW</div>
+        <div class="assessment-card-icon">💼</div>
+        <h3 class="assessment-card-title">진로 적성 분석</h3>
+        <p class="assessment-card-description">나에게 맞는 직업과 진로를 찾아보세요.</p>
+        <div class="assessment-card-meta">
+          <span>⏱️ 12문항</span>
+          <span>👥 890</span>
+        </div>
+      </div>
+
+      <!-- 투자 성향 분석 -->
+      <div class="assessment-card" onclick="startAssessment('investment')">
+        <div class="featured-badge">NEW</div>
+        <div class="assessment-card-icon">📈</div>
+        <h3 class="assessment-card-title">투자 성향 분석</h3>
+        <p class="assessment-card-description">나의 투자 스타일과 맞는 포트폴리오를 알아보세요.</p>
+        <div class="assessment-card-meta">
+          <span>⏱️ 10문항</span>
+          <span>👥 520</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 최근 분석 섹션 -->
+  <section class="container">
+    <h2 class="section-title">최근 완료한 분석</h2>
+    <div class="recent-assessments">
+      <div class="recent-assessments-list" id="recentAssessmentsList">
+        <p class="text-center text-muted" style="padding: 2rem;">
+          아직 완료한 분석이 없습니다.
+          <br>위 분석을 시작해보세요!
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 푸터 -->
+  <footer>
+    <div class="container">
+      <p>© 2026 Molt Company. All rights reserved.</p>
+      <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+        PersonaHub - 다양한 성격 유형 테스트를 한 곳에서! 🦞
+      </p>
+    </div>
+  </footer>
+
+  <!-- Google AdSense -->
+  <section class="container" style="margin-top: 3rem;">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4896634202351610" crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-4896634202351610"
+         data-ad-slot="5187796077"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </section>
+
+  <script src="/common.js"></script>
+  <script>
+    // 분석 시작 함수
+    function startAssessment(assessmentId) {
+      const assessmentUrls = {
+        'mbti': '/assessments/mbti',
+        'love-type': '/assessments/love-type',
+        'career': '/assessments/career',
+        'investment': '/assessments/investment'
+      };
+
+      const url = assessmentUrls[assessmentId];
+      if (url && url !== '#') {
+        window.location.href = url;
+      } else {
+        alert('곧 출시될 분석입니다!');
+      }
+    }
+
+    // 최근 완료한 분석 로드
+    function loadRecentAssessments() {
+      const results = PersonaHub.getAllResults();
+      const recentAssessmentsList = document.getElementById('recentAssessmentsList');
+
+      if (Object.keys(results).length === 0) {
+        recentAssessmentsList.innerHTML = `
+          <p class="text-center text-muted" style="padding: 2rem;">
+            아직 완료한 분석이 없습니다.
+            <br>위 분석을 시작해보세요!
+          </p>
+        `;
+        return;
+      }
+
+      const assessmentNames = {
+        'mbti': 'MBTI 성격 유형',
+        'love-type': '연애 유형 분석',
+        'career': '진로 적성 분석',
+        'investment': '투자 성향 분석'
+      };
+
+      const assessmentIcons = {
+        'mbti': '🧠',
+        'love-type': '❤️',
+        'career': '💼',
+        'investment': '📈'
+      };
+
+      const sortedResults = Object.entries(results)
+        .sort((a, b) => new Date(b[1].completedAt) - new Date(a[1].completedAt))
+        .slice(0, 5);
+
+      recentAssessmentsList.innerHTML = sortedResults.map(([assessmentId, result]) => `
+        <div class="recent-assessment-item">
+          <div class="recent-assessment-info">
+            <span class="recent-assessment-icon">${assessmentIcons[assessmentId] || '📝'}</span>
+            <div>
+              <div class="recent-assessment-name">${assessmentNames[assessmentId] || assessmentId}</div>
+              <div class="recent-assessment-date">${PersonaHub.formatDate(result.completedAt)}</div>
+            </div>
+          </div>
+          <span class="recent-assessment-result">${result.resultType}</span>
+        </div>
+      `).join('');
+
+      // 완료한 분석 수 업데이트
+      document.getElementById('completedAssessments').textContent = Object.keys(results).length;
+    }
+
+    // 페이지 로드 시 실행
+    document.addEventListener('DOMContentLoaded', () => {
+      loadRecentAssessments();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연애 유형 분석 - PersonaHub</title>
+    <link rel="stylesheet" href="/common.css">
+    <link rel="stylesheet" href="/css/assessments.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 진행 표시줄 -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span id="currentQ">1</span> / <span id="totalQ">10</span>
+            </div>
+        </div>
+
+        <!-- 질문 영역 -->
+        <div class="question-card fade-in" id="questionCard">
+            <h2 class="question-text" id="questionText"></h2>
+            <div class="options-container" id="optionsContainer">
+                <!-- 옵션들이 여기에 동적으로 생성됩니다 -->
+            </div>
+        </div>
+
+        <!-- 네비게이션 버튼 -->
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← 이전</button>
+            <button class="btn btn-ghost" id="skipBtn" onclick="skipQuestion()">건너뛰기</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">다음 →</button>
+        </div>
+
+        <!-- 결과 영역 (초기에는 숨김) -->
+        <div class="result-container hidden" id="resultContainer">
+            <div class="result-card">
+                <div class="result-emoji" id="resultEmoji"></div>
+                <h2 class="result-type" id="resultType"></h2>
+                <h3 class="result-title" id="resultTitle"></h3>
+                <p class="result-description" id="resultDescription"></p>
+
+                <div class="strengths-section">
+                    <h4>💪 강점</h4>
+                    <div class="strengths-list" id="strengthsList"></div>
+                </div>
+
+                <div class="tips-section">
+                    <h4>💡 연애 팁</h4>
+                    <p id="tipsText"></p>
+                </div>
+
+                <div class="score-breakdown">
+                    <h4>📊 점수 분석</h4>
+                    <div class="dimension-bars" id="dimensionBars"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="shareResult()">📤 결과 공유</button>
+                    <button class="btn btn-secondary" onclick="retakeAssessment()">🔄 다시 분석</button>
+                    <a href="/" class="btn btn-ghost">🏠 허브로 가기</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Google AdSense -->
+        <section class="container" style="margin-top: 3rem;">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4896634202351610" crossorigin="anonymous"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4896634202351610"
+                 data-ad-slot="5187796077"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </section>
+    </div>
+
+    <script src="/common.js"></script>
+    <script src="/assessment-engine.js"></script>
+    <script>
+        // 연애 유형 분석 설정
+        const ASSESSMENT_CONFIG = {
+            id: 'love-type',
+            name: '연애 유형 분석',
+            description: '당신의 연애 스타일을 분석합니다'
+        };
+
+        // 연애 유형 차원
+        const DIMENSIONS = {
+            'idealism_vs_pragmatism': {
+                name: '이상형',
+                a: { key: 'idealism', name: '낭만', color: '#E74C3C' },
+                b: { key: 'pragmatism', name: '현실', color: '#3498DB' }
+            },
+            'emotion_vs_rationality': {
+                name: '갈등 해결',
+                a: { key: 'emotion', name: '감정', color: '#E91E63' },
+                b: { key: 'rationality', name: '이성', color: '#9C27B0' }
+            },
+            'independence_vs_dependence': {
+                name: '일상 스타일',
+                a: { key: 'independence', name: '독립', color: '#2196F3' },
+                b: { key: 'dependence', name: '협력', color: '#F48FB1' }
+            },
+            'adventure_vs_stability': {
+                name: '관계 성향',
+                a: { key: 'adventure', name: '모험', color: '#FF9800' },
+                b: { key: 'stability', name: '안정', color: '#4CAF50' }
+            },
+            'curiosity_vs_loyalty': {
+                name: '탐험 유형',
+                a: { key: 'curiosity', name: '호기심', color: '#FFEB3B' },
+                b: { key: 'loyalty', name: '충실', color: '#607D8B' }
+            }
+        };
+
+        let questions = [];
+        let types = {};
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = {
+            idealism: 0, pragmatism: 0,
+            emotion: 0, rationality: 0,
+            independence: 0, dependence: 0,
+            adventure: 0, stability: 0,
+            curiosity: 0, loyalty: 0
+        };
+
+        // 페이지 로드
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            initAssessment();
+        });
+
+        // 데이터 로드
+        async function loadData() {
+            try {
+                const [questionsRes, typesRes] = await Promise.all([
+                    fetch('/data/love-type-questions.json'),
+                    fetch('/data/love-type-types.json')
+                ]);
+
+                questions = await questionsRes.json();
+                types = await typesRes.json();
+
+                // 총 질문 수 표시
+                document.getElementById('totalQ').textContent = questions.length;
+            } catch (error) {
+                console.error('데이터 로드 실패:', error);
+                alert('데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.');
+            }
+        }
+
+        // 분석 초기화
+        function initAssessment() {
+            currentQuestion = 0;
+            answers = new Array(questions.length).fill(null);
+            scores = {
+                idealism: 0, pragmatism: 0,
+                emotion: 0, rationality: 0,
+                independence: 0, dependence: 0,
+                adventure: 0, stability: 0,
+                curiosity: 0, loyalty: 0
+            };
+            showQuestion(0);
+            updateProgress();
+        }
+
+        // 질문 표시
+        function showQuestion(index) {
+            const question = questions[index];
+            const questionCard = document.getElementById('questionCard');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+
+            // 애니메이션 리셋
+            questionCard.classList.remove('fade-in');
+            void questionCard.offsetWidth; // reflow
+            questionCard.classList.add('fade-in');
+
+            // 질문 텍스트
+            questionText.textContent = question.question;
+
+            // 옵션 생성
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, optIndex) => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'option-btn';
+                optionBtn.textContent = option.text;
+                optionBtn.onclick = () => selectOption(optIndex, option);
+                optionsContainer.appendChild(optionBtn);
+            });
+
+            // 현재 질문 번호 업데이트
+            document.getElementById('currentQ').textContent = index + 1;
+
+            // 버튼 상태 업데이트
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('skipBtn').classList.toggle('hidden', index === questions.length - 1);
+
+            // 마지막 질문이면 다음 버튼 텍스트 변경
+            const nextBtn = document.getElementById('nextBtn');
+            if (index === questions.length - 1) {
+                nextBtn.textContent = '결과 보기 →';
+            } else {
+                nextBtn.textContent = '다음 →';
+            }
+        }
+
+        // 옵션 선택
+        function selectOption(optIndex, option) {
+            answers[currentQuestion] = { optIndex, option };
+
+            // 점수 업데이트
+            scores[option.value]++;
+
+            // 선택된 옵션 하이라이트
+            const optionBtns = document.querySelectorAll('.option-btn');
+            optionBtns.forEach((btn, idx) => {
+                btn.classList.toggle('selected', idx === optIndex);
+            });
+        }
+
+        // 다음 질문
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateProgress();
+            } else {
+                showResult();
+            }
+        }
+
+        // 이전 질문
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                // 현재 답변 제거 (되돌리기)
+                const currentAnswer = answers[currentQuestion];
+                if (currentAnswer) {
+                    scores[currentAnswer.option.value]--;
+                }
+
+                currentQuestion--;
+                showQuestion(currentQuestion);
+                updateProgress();
+            }
+        }
+
+        // 질문 건너뛰기
+        function skipQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateProgress();
+            }
+        }
+
+        // 진행률 업데이트
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        // 결과 계산
+        function calculateResult() {
+            const result = {};
+
+            // 각 차원의 우세한 쪽 선택
+            result.idealism_vs_pragmatism = scores.idealism >= scores.pragmatism ? 'idealism' : 'pragmatism';
+            result.emotion_vs_rationality = scores.emotion >= scores.rationality ? 'emotion' : 'rationality';
+            result.independence_vs_dependence = scores.independence >= scores.dependence ? 'independence' : 'dependence';
+            result.adventure_vs_stability = scores.adventure >= scores.stability ? 'adventure' : 'stability';
+            result.curiosity_vs_loyalty = scores.curiosity >= scores.loyalty ? 'curiosity' : 'loyalty';
+
+            // mbti_like와 일치하는 유형 찾기
+            const mbtiLike = [
+                result.idealism_vs_pragmatism.charAt(0).toUpperCase() === 'I' ? 'I' : 'P',
+                result.emotion_vs_rationality.charAt(0).toUpperCase() === 'E' ? 'E' : 'R',
+                result.independence_vs_dependence.charAt(0).toUpperCase() === 'I' ? 'I' : 'D',
+                result.adventure_vs_stability.charAt(0).toUpperCase() === 'A' ? 'A' : 'S',
+                result.curiosity_vs_loyalty.charAt(0).toUpperCase() === 'C' ? 'C' : 'L'
+            ].join('-');
+
+            // 유형 찾기
+            const matchingType = Object.entries(types).find(([id, type]) => {
+                const typeCode = type.mbti_like || '';
+                const normalizedCode = typeCode.replace(/-/g, '');
+                const normalizedResult = mbtiLike.replace(/-/g, '');
+                return normalizedCode === normalizedResult;
+            });
+
+            if (matchingType) {
+                return { typeId: matchingType[0], typeData: matchingType[1] };
+            }
+
+            // 일치하는 유형이 없으면 기본값 반환
+            return { typeId: 'balanced_lover', typeData: types['balanced_lover'] };
+        }
+
+        // 결과 표시
+        function showResult() {
+            const { typeId, typeData } = calculateResult();
+
+            // 결과 카드 내용 채우기
+            document.getElementById('resultEmoji').textContent = typeData.emoji;
+            document.getElementById('resultType').textContent = `${typeData.name}`;
+            document.getElementById('resultTitle').textContent = typeData.title;
+            document.getElementById('resultDescription').textContent = typeData.description;
+
+            // 강점 목록
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = typeData.strengths.map(strength =>
+                `<span class="strength-tag">${strength}</span>`
+            ).join('');
+
+            // 연애 팁
+            document.getElementById('tipsText').textContent = typeData.tips;
+
+            // 점수 분석
+            const dimensionBars = document.getElementById('dimensionBars');
+            const dimensionEntries = Object.entries(DIMENSIONS);
+
+            dimensionBars.innerHTML = dimensionEntries.map(([key, dimension]) => {
+                const scoreA = scores[dimension.a.key];
+                const scoreB = scores[dimension.b.key];
+                const total = scoreA + scoreB;
+                const percentA = total > 0 ? (scoreA / total) * 100 : 50;
+                const percentB = total > 0 ? (scoreB / total) * 100 : 50;
+
+                return `
+                    <div class="dimension-bar">
+                        <div class="dimension-bar-left" style="width: ${percentA}%; background-color: ${dimension.a.color}">
+                            <span>${dimension.a.name} ${Math.round(percentA)}%</span>
+                        </div>
+                        <div class="dimension-bar-right" style="width: ${percentB}%; background-color: ${dimension.b.color}">
+                            <span>${dimension.b.name} ${Math.round(percentB)}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // 질문 카드 숨기고 결과 표시
+            document.getElementById('questionCard').classList.add('hidden');
+            document.querySelector('.nav-buttons').classList.add('hidden');
+            document.querySelector('.progress-container').classList.add('hidden');
+            document.getElementById('resultContainer').classList.remove('hidden');
+
+            // 결과 저장
+            PersonaHub.saveResult({
+                assessmentId: ASSESSMENT_CONFIG.id,
+                assessmentName: ASSESSMENT_CONFIG.name,
+                result: typeData.name,
+                resultType: typeId,
+                resultData: typeData,
+                scores: scores,
+                completedAt: new Date().toISOString()
+            });
+        }
+
+        // 결과 공유
+        function shareResult() {
+            const { typeId, typeData } = calculateResult();
+
+            const shareText = `💕 내 연애 유형은 ${typeData.name} ${typeData.emoji}\n${typeData.title}\n\n당신도 분석해보세요! 👇`;
+            const shareUrl = 'https://personahub.com/assessments/love-type';
+
+            PersonaHub.shareToClipboard(shareText, shareUrl);
+        }
+
+        // 다시 분석
+        function retakeAssessment() {
+            // 결과 숨기고 질문 표시
+            document.getElementById('resultContainer').classList.add('hidden');
+            document.getElementById('questionCard').classList.remove('hidden');
+            document.querySelector('.nav-buttons').classList.remove('hidden');
+            document.querySelector('.progress-container').classList.remove('hidden');
+
+            // 분석 초기화
+            initAssessment();
+        }
+    </script>
+</body>
+</html>

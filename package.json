@@ -1,0 +1,22 @@
+{
+  "name": "persona-hub",
+  "version": "1.0.0",
+  "description": "다중 테스트 허브 - MBTI, 연애, 진로, 투자 등",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "persona",
+    "test",
+    "mbti",
+    "psychology"
+  ],
+  "author": "Molt Company",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

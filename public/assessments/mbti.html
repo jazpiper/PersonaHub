@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI 성격 유형 분석 - PersonaHub</title>
+    <link rel="stylesheet" href="/common.css">
+    <link rel="stylesheet" href="/css/assessments.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 진행 표시줄 -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span id="currentQ">1</span> / <span id="totalQ">12</span>
+            </div>
+        </div>
+
+        <!-- 질문 영역 -->
+        <div class="question-card fade-in" id="questionCard">
+            <h2 class="question-text" id="questionText"></h2>
+            <div class="options-container" id="optionsContainer">
+                <!-- 옵션들이 여기에 동적으로 생성됩니다 -->
+            </div>
+        </div>
+
+        <!-- 네비게이션 버튼 -->
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← 이전</button>
+            <button class="btn btn-ghost" id="skipBtn" onclick="skipQuestion()">건너뛰기</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">다음 →</button>
+        </div>
+
+        <!-- 결과 영역 (초기에는 숨김) -->
+        <div class="result-container hidden" id="resultContainer">
+            <div class="result-card">
+                <div class="result-emoji" id="resultEmoji"></div>
+                <h2 class="result-type" id="resultType"></h2>
+                <h3 class="result-title" id="resultTitle"></h3>
+                <p class="result-description" id="resultDescription"></p>
+
+                <div class="strengths-section">
+                    <h4>💪 강점</h4>
+                    <div class="strengths-list" id="strengthsList"></div>
+                </div>
+
+                <div class="score-breakdown">
+                    <h4>📊 점수 분석</h4>
+                    <div class="dimension-bars" id="dimensionBars"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="shareResult()">📤 결과 공유</button>
+                    <button class="btn btn-secondary" onclick="retakeAssessment()">🔄 다시 분석</button>
+                    <a href="/" class="btn btn-ghost">🏠 허브로 가기</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Google AdSense -->
+        <section class="container" style="margin-top: 3rem;">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4896634202351610" crossorigin="anonymous"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4896634202351610"
+                 data-ad-slot="5187796077"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </section>
+    </div>
+
+    <script src="/common.js"></script>
+    <script src="/assessment-engine.js"></script>
+    <script>
+        // MBTI 분석 설정
+        const ASSESSMENT_CONFIG = {
+            id: 'mbti',
+            name: 'MBTI 성격 유형 분석',
+            description: '당신의 성격 유형을 분석합니다'
+        };
+
+        // MBTI 차원
+        const DIMENSIONS = {
+            E: { opposite: 'I', name: '외향형 (E)', color: '#FF6B6B' },
+            I: { opposite: 'E', name: '내향형 (I)', color: '#4ECDC4' },
+            S: { opposite: 'N', name: '감각형 (S)', color: '#45B7D1' },
+            N: { opposite: 'S', name: '직관형 (N)', color: '#96CEB4' },
+            T: { opposite: 'F', name: '사고형 (T)', color: '#FFEAA7' },
+            F: { opposite: 'T', name: '감정형 (F)', color: '#DDA0DD' },
+            J: { opposite: 'P', name: '판단형 (J)', color: '#98D8C8' },
+            P: { opposite: 'J', name: '인지형 (P)', color: '#F7DC6F' }
+        };
+
+        let questions = [];
+        let types = {};
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+        // 페이지 로드
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            initAssessment();
+        });
+
+        // 데이터 로드
+        async function loadData() {
+            try {
+                const [questionsRes, typesRes] = await Promise.all([
+                    fetch('/data/mbti-questions.json'),
+                    fetch('/data/mbti-types.json')
+                ]);
+
+                questions = await questionsRes.json();
+                types = await typesRes.json();
+
+                // 총 질문 수 표시
+                document.getElementById('totalQ').textContent = questions.length;
+            } catch (error) {
+                console.error('데이터 로드 실패:', error);
+                alert('데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.');
+            }
+        }
+
+        // 분석 초기화
+        function initAssessment() {
+            currentQuestion = 0;
+            answers = new Array(questions.length).fill(null);
+            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            showQuestion(0);
+            updateProgress();
+        }
+
+        // 질문 표시
+        function showQuestion(index) {
+            const question = questions[index];
+            const questionCard = document.getElementById('questionCard');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+
+            // 애니메이션 리셋
+            questionCard.classList.remove('fade-in');
+            void questionCard.offsetWidth; // reflow
+            questionCard.classList.add('fade-in');
+
+            // 질문 텍스트
+            questionText.textContent = question.question;
+
+            // 옵션 생성
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, optIndex) => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'option-btn';
+                optionBtn.textContent = option.text;
+                optionBtn.onclick = () => selectOption(optIndex, option);
+                optionsContainer.appendChild(optionBtn);
+            });
+
+            // 현재 질문 번호 업데이트
+            document.getElementById('currentQ').textContent = index + 1;
+
+            // 버튼 상태 업데이트
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('skipBtn').classList.toggle('hidden', index === questions.length - 1);
+
+            // 마지막 질문이면 다음 버튼 텍스트 변경
+            const nextBtn = document.getElementById('nextBtn');
+            if (index === questions.length - 1) {
+                nextBtn.textContent = '결과 보기 →';
+            } else {
+                nextBtn.textContent = '다음 →';
+            }
+        }
+
+        // 옵션 선택
+        function selectOption(optIndex, option) {
+            answers[currentQuestion] = { optIndex, option };
+
+            // 점수 업데이트
+            scores[option.dimension] += option.value;
+
+            // 선택된 옵션 하이라이트
+            const optionBtns = document.querySelectorAll('.option-btn');
+            optionBtns.forEach((btn, idx) => {
+                btn.classList.toggle('selected', idx === optIndex);
+            });
+        }
+
+        // 다음 질문
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateProgress();
+            } else {
+                showResult();
+            }
+        }
+
+        // 이전 질문
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                // 현재 답변 제거 (되돌리기)
+                const currentAnswer = answers[currentQuestion];
+                if (currentAnswer) {
+                    scores[currentAnswer.option.dimension] -= currentAnswer.option.value;
+                }
+
+                currentQuestion--;
+                showQuestion(currentQuestion);
+                updateProgress();
+            }
+        }
+
+        // 질문 건너뛰기
+        function skipQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateProgress();
+            }
+        }
+
+        // 진행률 업데이트
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        // 결과 계산
+        function calculateResult() {
+            const mbti = [];
+
+            mbti.push(scores.E >= scores.I ? 'E' : 'I');
+            mbti.push(scores.S >= scores.N ? 'S' : 'N');
+            mbti.push(scores.T >= scores.F ? 'T' : 'F');
+            mbti.push(scores.J >= scores.P ? 'J' : 'P');
+
+            return mbti.join('');
+        }
+
+        // 결과 표시
+        function showResult() {
+            const mbti = calculateResult();
+            const typeData = types[mbti];
+
+            // 결과 카드 내용 채우기
+            document.getElementById('resultEmoji').textContent = typeData.emoji;
+            document.getElementById('resultType').textContent = `${mbti} - ${typeData.name}`;
+            document.getElementById('resultTitle').textContent = typeData.title;
+            document.getElementById('resultDescription').textContent = typeData.description;
+
+            // 강점 목록
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = typeData.strengths.map(strength =>
+                `<span class="strength-tag">${strength}</span>`
+            ).join('');
+
+            // 점수 분석
+            const dimensionBars = document.getElementById('dimensionBars');
+            const pairs = [['E', 'I'], ['S', 'N'], ['T', 'F'], ['J', 'P']];
+
+            dimensionBars.innerHTML = pairs.map(([d1, d2]) => {
+                const score1 = scores[d1];
+                const score2 = scores[d2];
+                const total = score1 + score2;
+                const percent1 = total > 0 ? (score1 / total) * 100 : 50;
+                const percent2 = total > 0 ? (score2 / total) * 100 : 50;
+
+                return `
+                    <div class="dimension-bar">
+                        <div class="dimension-bar-left" style="width: ${percent1}%; background-color: ${DIMENSIONS[d1].color}">
+                            <span>${d1} ${Math.round(percent1)}%</span>
+                        </div>
+                        <div class="dimension-bar-right" style="width: ${percent2}%; background-color: ${DIMENSIONS[d2].color}">
+                            <span>${d2} ${Math.round(percent2)}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // 질문 카드 숨기고 결과 표시
+            document.getElementById('questionCard').classList.add('hidden');
+            document.querySelector('.nav-buttons').classList.add('hidden');
+            document.querySelector('.progress-container').classList.add('hidden');
+            document.getElementById('resultContainer').classList.remove('hidden');
+
+            // 결과 저장
+            PersonaHub.saveResult({
+                assessmentId: ASSESSMENT_CONFIG.id,
+                assessmentName: ASSESSMENT_CONFIG.name,
+                result: mbti,
+                resultData: typeData,
+                scores: scores,
+                completedAt: new Date().toISOString()
+            });
+        }
+
+        // 결과 공유
+        function shareResult() {
+            const mbti = calculateResult();
+            const typeData = types[mbti];
+
+            const shareText = `🧠 내 MBTI 유형은 ${mbti} ${typeData.emoji}\n${typeData.title}\n\n당신도 분석해보세요! 👇`;
+            const shareUrl = 'https://personahub.com/assessments/mbti';
+
+            PersonaHub.shareToClipboard(shareText, shareUrl);
+        }
+
+        // 다시 분석
+        function retakeAssessment() {
+            // 결과 숨기고 질문 표시
+            document.getElementById('resultContainer').classList.add('hidden');
+            document.getElementById('questionCard').classList.remove('hidden');
+            document.querySelector('.nav-buttons').classList.remove('hidden');
+            document.querySelector('.progress-container').classList.remove('hidden');
+
+            // 분석 초기화
+            initAssessment();
+        }
+    </script>
+</body>
+</html>

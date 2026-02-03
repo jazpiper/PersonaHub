@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "dimension": "R",
+    "question": "주말에 무엇을 하고 싶나요?",
+    "options": [
+      { "text": "직접 무언가를 만들거나 고치는 DIY", "value": "R" },
+      { "text": "재미있는 기사나 책 읽기", "value": "I" },
+      { "text": "그림 그리기나 음악 감상", "value": "A" }
+    ]
+  },
+  {
+    "id": 2,
+    "dimension": "S",
+    "question": "친구가 문제로 고민할 때 어떻게 도와주고 싶나요?",
+    "options": [
+      { "text": "해결책을 찾아서 조언해주기", "value": "I" },
+      { "text": "감정적으로 들어주고 위로해주기", "value": "S" },
+      { "text": "돈이나 자원을 모아서 실질적으로 도와주기", "value": "E" }
+    ]
+  },
+  {
+    "id": 3,
+    "dimension": "A",
+    "question": "프로젝트에서 가장 즐거운 활동은?",
+    "options": [
+      { "text": "실제로 만들고 실행하는 과정", "value": "R" },
+      { "text": "새로운 아이디어를 창안하는 과정", "value": "A" },
+      { "text": "팀을 이끌고 조정하는 과정", "value": "E" }
+    ]
+  },
+  {
+    "id": 4,
+    "dimension": "C",
+    "question": "일을 할 때 어떤 환경이 편안한가요?",
+    "options": [
+      { "text": "명확한 지침과 체계적인 프로세스", "value": "C" },
+      { "text": "자유롭게 창의할 수 있는 환경", "value": "A" },
+      { "text": "다양한 사람과 소통하는 환경", "value": "S" }
+    ]
+  },
+  {
+    "id": 5,
+    "dimension": "E",
+    "question": "그룹 활동에서 어떤 역할을 선호하나요?",
+    "options": [
+      { "text": "리더가 되어 전체를 조율하기", "value": "E" },
+      { "text": "세부적인 부분을 꼼꼼히 관리하기", "value": "C" },
+      { "text": "실질적인 작업을 직접 실행하기", "value": "R" }
+    ]
+  },
+  {
+    "id": 6,
+    "dimension": "I",
+    "question": "새로운 기술을 배울 때 어떤 방식을 선호하나요?",
+    "options": [
+      { "text": "직접 해보며 실험해보기", "value": "R" },
+      { "text": "원리를 깊이 이해하고 분석하기", "value": "I" },
+      { "text": "다른 사람에게 배우고 토론하기", "value": "S" }
+    ]
+  },
+  {
+    "id": 7,
+    "dimension": "R",
+    "question": "어떤 종류의 일이 가장 보람 있나요?",
+    "options": [
+      { "text": "직접 만든 물건이나 결과물이 남는 일", "value": "R" },
+      { "text": "새로운 지식이나 이론을 발견하는 일", "value": "I" },
+      { "text": "아름다운 창작물을 만드는 일", "value": "A" }
+    ]
+  },
+  {
+    "id": 8,
+    "dimension": "S",
+    "question": "커뮤니티 활동에서 어떤 역할을 하고 싶나요?",
+    "options": [
+      { "text": "봉사 활동을 주도적으로 기획하기", "value": "E" },
+      { "text": "도움이 필요한 사람을 직접 돕기", "value": "S" },
+      { "text": "활동 데이터를 정리하고 관리하기", "value": "C" }
+    ]
+  },
+  {
+    "id": 9,
+    "dimension": "A",
+    "question": "어떤 유형의 문제를 해결하는 것이 즐겁나요?",
+    "options": [
+      { "text": "기술적인 문제를 논리적으로 해결", "value": "I" },
+      { "text": "창의적인 해결책을 고안해내기", "value": "A" },
+      { "text": "사람 간의 갈등을 중재하기", "value": "S" }
+    ]
+  },
+  {
+    "id": 10,
+    "dimension": "C",
+    "question": "시간 관리 스타일은?",
+    "options": [
+      { "text": "계획대로 체계적으로 관리", "value": "C" },
+      { "text": "즉흥적으로 유연하게 대처", "value": "A" },
+      { "text": "상황에 따라 그때그때 결정", "value": "S" }
+    ]
+  },
+  {
+    "id": 11,
+    "dimension": "E",
+    "question": "성공을 어떻게 정의하나요?",
+    "options": [
+      { "text": "많은 사람에게 영향력을 미치는 것", "value": "E" },
+      { "text": "높은 수준의 전문성을 갖는 것", "value": "I" },
+      { "text": "자신만의 독창적인 가치를 만드는 것", "value": "A" }
+    ]
+  },
+  {
+    "id": 12,
+    "dimension": "I",
+    "question": "데이터나 정보를 접할 때 어떻게 하나요?",
+    "options": [
+      { "text": "패턴을 찾고 원리를 분석", "value": "I" },
+      { "text": "체계적으로 정리하고 보관", "value": "C" },
+      { "text": "이야기로 만들어 사람들과 공유", "value": "S" }
+    ]
+  }
+]

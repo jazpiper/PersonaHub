@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진로 적성 분석 - PersonaHub</title>
+    <link rel="stylesheet" href="/common.css">
+    <link rel="stylesheet" href="/css/assessments.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 진행 표시줄 -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                <span id="currentQ">1</span> / <span id="totalQ">12</span>
+            </div>
+        </div>
+
+        <!-- 질문 영역 -->
+        <div class="question-card fade-in" id="questionCard">
+            <h2 class="question-text" id="questionText"></h2>
+            <div class="options-container" id="optionsContainer">
+                <!-- 옵션들이 여기에 동적으로 생성됩니다 -->
+            </div>
+        </div>
+
+        <!-- 네비게이션 버튼 -->
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← 이전</button>
+            <button class="btn btn-ghost" id="skipBtn" onclick="skipQuestion()">건너뛰기</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">다음 →</button>
+        </div>
+
+        <!-- 결과 영역 (초기에는 숨김) -->
+        <div class="result-container hidden" id="resultContainer">
+            <div class="result-card">
+                <div class="result-emoji" id="resultEmoji"></div>
+                <h2 class="result-type" id="resultType"></h2>
+                <h3 class="result-title" id="resultTitle"></h3>
+                <p class="result-description" id="resultDescription"></p>
+
+                <div class="strengths-section">
+                    <h4>💪 강점</h4>
+                    <div class="strengths-list" id="strengthsList"></div>
+                </div>
+
+                <div class="careers-section">
+                    <h4>💼 적합한 직업</h4>
+                    <div class="careers-list" id="careersList"></div>
+                </div>
+
+                <div class="tips-section">
+                    <h4>💡 진로 팁</h4>
+                    <p id="tipsText"></p>
+                </div>
+
+                <div class="score-breakdown">
+                    <h4>📊 적성 분석</h4>
+                    <div class="dimension-bars" id="dimensionBars"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="shareResult()">📤 결과 공유</button>
+                    <button class="btn btn-secondary" onclick="retakeAssessment()">🔄 다시 분석</button>
+                    <a href="/" class="btn btn-ghost">🏠 허브로 가기</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Google AdSense -->
+        <section class="container" style="margin-top: 3rem;">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4896634202351610" crossorigin="anonymous"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4896634202351610"
+                 data-ad-slot="5187796077"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </section>
+    </div>
+
+    <script src="/common.js"></script>
+    <script src="/assessment-engine.js"></script>
+    <script>
+        // 진로 적성 분석 설정
+        const ASSESSMENT_CONFIG = {
+            id: 'career',
+            name: '진로 적성 분석',
+            description: '당신의 적성을 분석합니다'
+        };
+
+        // 진로 유형 (RIASEC)
+        const TYPES = {
+            R: { name: '현실형', full: 'Realistic', color: '#8B4513' },
+            I: { name: '탐구형', full: 'Investigative', color: '#4169E1' },
+            A: { name: '예술형', full: 'Artistic', color: '#9932CC' },
+            S: { name: '사회형', full: 'Social', color: '#228B22' },
+            E: { name: '기업형', full: 'Enterprising', color: '#DC143C' },
+            C: { name: '관습형', full: 'Conventional', color: '#2F4F4F' }
+        };
+
+        let questions = [];
+        let types = {};
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+
+        // 페이지 로드
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            initAssessment();
+        });
+
+        // 데이터 로드
+        async function loadData() {
+            try {
+                const [questionsRes, typesRes] = await Promise.all([
+                    fetch('/data/career-questions.json'),
+                    fetch('/data/career-types.json')
+                ]);
+
+                questions = await questionsRes.json();
+                types = await typesRes.json();
+
+                // 총 질문 수 표시
+                document.getElementById('totalQ').textContent = questions.length;
+            } catch (error) {
+                console.error('데이터 로드 실패:', error);
+                alert('데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.');
+            }
+        }
+
+        // 분석 초기화
+        function initAssessment() {
+            currentQuestion = 0;
+            answers = new Array(questions.length).fill(null);
+            scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+            showQuestion(0);
+            updateProgress();
+        }
+
+        // 질문 표시
+        function showQuestion(index) {
+            const question = questions[index];
+            const questionCard = document.getElementById('questionCard');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+
+            // 애니메이션 리셋
+            questionCard.classList.remove('fade-in');
+            void questionCard.offsetWidth; // reflow
+            questionCard.classList.add('fade-in');
+
+            // 질문 텍스트
+            questionText.textContent = question.question;
+
+            // 옵션 생성
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, optIndex) => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'option-btn';
+                optionBtn.textContent = option.text;
+                optionBtn.onclick = () => selectOption(optIndex, option);
+                optionsContainer.appendChild(optionBtn);
+            });
+
+            // 현재 질문 번호 업데이트
+            document.getElementById('currentQ').textContent = index + 1;
+
+            // 버튼 상태 업데이트
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('skipBtn').classList.toggle('hidden', index === questions.length - 1);
+
+            // 마지막 질문이면 다음 버튼 텍스트 변경
+            const nextBtn = document.getElementById('nextBtn');
+            if (index === questions.length - 1) {
+                nextBtn.textContent = '결과 보기 →';
+            } else {
+                nextBtn.textContent = '다음 →';
+            }
+        }
+
+        // 옵션 선택
+        function selectOption(optIndex, option) {
+            answers[currentQuestion] = { optIndex, option };
+
+            // 점수 업데이트
+            scores[option.value]++;
+
+            // 선택된 옵션 하이라이트
+            const optionBtns = document.querySelectorAll('.option-btn');
+            optionBtns.forEach((btn, idx) => {
+                btn.classList.toggle('selected', idx === optIndex);
+            });
+        }
+
+        // 다음 질문
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateProgress();
+            } else {
+                showResult();
+            }
+        }
+
+        // 이전 질문
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                // 현재 답변 제거 (되돌리기)
+                const currentAnswer = answers[currentQuestion];
+                if (currentAnswer) {
+                    scores[currentAnswer.option.value]--;
+                }
+
+                currentQuestion--;
+                showQuestion(currentQuestion);
+                updateProgress();
+            }
+        }
+
+        // 질문 건너뛰기
+        function skipQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateProgress();
+            }
+        }
+
+        // 진행률 업데이트
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        // 결과 계산
+        function calculateResult() {
+            // 가장 높은 점수를 가진 유형 찾기
+            const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+            const topType = sortedScores[0][0];
+            const typeData = types[topType];
+
+            return { typeId: topType, typeData };
+        }
+
+        // 결과 표시
+        function showResult() {
+            const { typeId, typeData } = calculateResult();
+
+            // 결과 카드 내용 채우기
+            document.getElementById('resultEmoji').textContent = typeData.emoji;
+            document.getElementById('resultType').textContent = typeData.name;
+            document.getElementById('resultTitle').textContent = typeData.title;
+            document.getElementById('resultDescription').textContent = typeData.description;
+
+            // 강점 목록
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = typeData.strengths.map(strength =>
+                `<span class="strength-tag">${strength}</span>`
+            ).join('');
+
+            // 적합한 직업 목록
+            const careersList = document.getElementById('careersList');
+            careersList.innerHTML = typeData.careers.map(career =>
+                `<span class="career-tag">${career}</span>`
+            ).join('');
+
+            // 진로 팁
+            document.getElementById('tipsText').textContent = typeData.tips;
+
+            // 적성 분석
+            const dimensionBars = document.getElementById('dimensionBars');
+            const typeEntries = Object.entries(TYPES);
+            const maxScore = Math.max(...Object.values(scores), 1);
+
+            dimensionBars.innerHTML = typeEntries.map(([key, type]) => {
+                const score = scores[key];
+                const percent = (score / maxScore) * 100;
+
+                return `
+                    <div class="career-bar">
+                        <div class="career-bar-label">${type.name}</div>
+                        <div class="career-bar-track">
+                            <div class="career-bar-fill" style="width: ${percent}%; background-color: ${type.color}"></div>
+                        </div>
+                        <div class="career-bar-score">${score}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // 질문 카드 숨기고 결과 표시
+            document.getElementById('questionCard').classList.add('hidden');
+            document.querySelector('.nav-buttons').classList.add('hidden');
+            document.querySelector('.progress-container').classList.add('hidden');
+            document.getElementById('resultContainer').classList.remove('hidden');
+
+            // 결과 저장
+            PersonaHub.saveResult({
+                assessmentId: ASSESSMENT_CONFIG.id,
+                assessmentName: ASSESSMENT_CONFIG.name,
+                result: typeData.name,
+                resultType: typeId,
+                resultData: typeData,
+                scores: scores,
+                completedAt: new Date().toISOString()
+            });
+        }
+
+        // 결과 공유
+        function shareResult() {
+            const { typeId, typeData } = calculateResult();
+
+            const shareText = `💼 내 진로 적성은 ${typeData.name} ${typeData.emoji}\n${typeData.title}\n\n당신도 분석해보세요! 👇`;
+            const shareUrl = 'https://personahub.com/assessments/career';
+
+            PersonaHub.shareToClipboard(shareText, shareUrl);
+        }
+
+        // 다시 분석
+        function retakeAssessment() {
+            // 결과 숨기고 질문 표시
+            document.getElementById('resultContainer').classList.add('hidden');
+            document.getElementById('questionCard').classList.remove('hidden');
+            document.querySelector('.nav-buttons').classList.remove('hidden');
+            document.querySelector('.progress-container').classList.remove('hidden');
+
+            // 분석 초기화
+            initAssessment();
+        }
+    </script>
+</body>
+</html>

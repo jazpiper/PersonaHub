@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "dimension": "risk_tolerance",
+    "question": "투자 상품의 가격이 20% 하락한다면 어떻게 할 건가요?",
+    "options": [
+      { "text": "즉시 손실을 줄이기 위해 매도한다", "value": 1 },
+      { "text": "당황하지만 일단 기다려본다", "value": 2 },
+      { "text": "기회로 생각하고 더 매수한다", "value": 3 },
+      { "text": "크게 매수해 더 큰 수익을 노린다", "value": 4 },
+      { "text": "전 재산을 투입해 역투자한다", "value": 5 }
+    ]
+  },
+  {
+    "id": 2,
+    "dimension": "time_horizon",
+    "question": "투자 기간은 어느 정도로 생각하시나요?",
+    "options": [
+      { "text": "1년 이내 단기", "value": 1 },
+      { "text": "1-3년 중기", "value": 2 },
+      { "text": "3-5년 중장기", "value": 3 },
+      { "text": "5-10년 장기", "value": 4 },
+      { "text": "10년 이상 초장기", "value": 5 }
+    ]
+  },
+  {
+    "id": 3,
+    "dimension": "return_expectation",
+    "question": "1년 동안 기대하는 수익률은?",
+    "options": [
+      { "text": "은행 금리 수준 (3-5%)", "value": 1 },
+      { "text": "채권 수준 (5-8%)", "value": 2 },
+      { "text": "주식 평균 (8-12%)", "value": 3 },
+      { "text": "성장주 수준 (12-20%)", "value": 4 },
+      { "text": "고수익 기대 (20% 이상)", "value": 5 }
+    ]
+  },
+  {
+    "id": 4,
+    "dimension": "risk_tolerance",
+    "question": "투자 경험이 있다면, 큰 손실을 본 적이 있나요?",
+    "options": [
+      { "text": "투자해본 적이 없다", "value": 1 },
+      { "text": "손실 본 적이 없다", "value": 2 },
+      { "text": "작은 손실은 있었지만 복구했다", "value": 3 },
+      { "text": "큰 손실을 본 적이 있지만 길게 봤다", "value": 4 },
+      { "text": "큰 손실을 겪었고 아직 복구 중이다", "value": 5 }
+    ]
+  },
+  {
+    "id": 5,
+    "dimension": "knowledge_level",
+    "question": "금융/투자 지식 수준은?",
+    "options": [
+      { "text": "전혀 모른다", "value": 1 },
+      { "text": "기본 용어 정도는 안다", "value": 2 },
+      { "text": "일반적인 주식 투자는 이해한다", "value": 3 },
+      { "text": "파생상품까지 이해한다", "value": 4 },
+      { "text": "전문가 수준의 지식이 있다", "value": 5 }
+    ]
+  },
+  {
+    "id": 6,
+    "dimension": "diversification",
+    "question": "투자 포트폴리오는 어떻게 구성하시나요?",
+    "options": [
+      { "text": "안전자산만 투자한다", "value": 1 },
+      { "text": "주요 자산군에 분산 투자한다", "value": 2 },
+      { "text": "섹터별로 분산한다", "value": 3 },
+      { "text": "일부 고위험 자산에 집중한다", "value": 4 },
+      { "text": "특정 종목에 올인한다", "value": 5 }
+    ]
+  },
+  {
+    "id": 7,
+    "dimension": "emotional_control",
+    "question": "주가 변동에 대한 감정적 반응은?",
+    "options": [
+      { "text": "항상 불안하다", "value": 1 },
+      { "text": "가끔 걱정된다", "value": 2 },
+      { "text": "보통이다", "value": 3 },
+      { "text": "거의 상관없다", "value": 4 },
+      { "text": "변동을 즐긴다", "value": 5 }
+    ]
+  },
+  {
+    "id": 8,
+    "dimension": "time_horizon",
+    "question": "긴급하게 돈이 필요한 상황이 생긴다면?",
+    "options": [
+      { "text": "예적금이나 현금만 사용한다", "value": 1 },
+      { "text": "안전자산 위주로 인출한다", "value": 2 },
+      { "text": "손실이 나도 일부 매도한다", "value": 3 },
+      { "text": "상황에 따라 크게 매도한다", "value": 4 },
+      { "text": "투자 상품 전부 매도한다", "value": 5 }
+    ]
+  },
+  {
+    "id": 9,
+    "dimension": "return_expectation",
+    "question": "고수익 기회에 높은 리스크가 있다면?",
+    "options": [
+      { "text": "절대로 안 한다", "value": 1 },
+      { "text": "아주 작은 금액만 시도", "value": 2 },
+      { "text": "부분적으로 참여", "value": 3 },
+      { "text": "기회라면 크게 참여", "value": 4 },
+      { "text": "전 재산을 투입한다", "value": 5 }
+    ]
+  },
+  {
+    "id": 10,
+    "dimension": "knowledge_level",
+    "question": "새로운 투자 기회를 발견하면?",
+    "options": [
+      { "text": "전문가에게 먼저 상담한다", "value": 1 },
+      { "text": "꼼꼼히 분석 후 소액 투자", "value": 2 },
+      { "text": "나름대로 분석하고 투자", "value": 3 },
+      { "text": "빠르게 판단해 투자", "value": 4 },
+      { "text": "직감과 경험으로 즉시 투자", "value": 5 }
+    ]
+  }
+]

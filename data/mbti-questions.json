@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "question": "친구들이 모임을 계획하면 너는?",
+    "options": [
+      { "text": "바로 참여!", "dimension": "E", "value": 2 },
+      { "text": "고민하다가 결정...", "dimension": "I", "value": 2 }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "새로운 사람을 만날 때는?",
+    "options": [
+      { "text": "먼저 말 걸게", "dimension": "E", "value": 2 },
+      { "text": "상대가 말할 때까지 기다려", "dimension": "I", "value": 2 }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "계획을 세울 때는?",
+    "options": [
+      { "text": "세밀하게 다 계획해", "dimension": "J", "value": 2 },
+      { "text": "즉흥적으로 가자!", "dimension": "P", "value": 2 }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "여행 갈 때 스타일은?",
+    "options": [
+      { "text": "일정 다 짜서 감", "dimension": "J", "value": 2 },
+      { "text": "가서 뭘 할지 결정", "dimension": "P", "value": 2 }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "문제 해결할 때는?",
+    "options": [
+      { "text": "논리적으로 분석", "dimension": "T", "value": 2 },
+      { "text": "감정적으로 고민", "dimension": "F", "value": 2 }
+    ]
+  },
+  {
+    "id": 6,
+    "question": "친구가 울고 있으면?",
+    "options": [
+      { "text": "해결책 찾아줘", "dimension": "T", "value": 2 },
+      { "text": "위로부터 먼저", "dimension": "F", "value": 2 }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "자유 시간에 보통 뭐 해?",
+    "options": [
+      { "text": "밖에서 활동", "dimension": "S", "value": 2 },
+      { "text": "집에서 상상", "dimension": "N", "value": 2 }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "정보를 접할 때는?",
+    "options": [
+      { "text": "구체적 사실 좋아", "dimension": "S", "value": 2 },
+      { "text": "개념과 가능성", "dimension": "N", "value": 2 }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "파티에 있을 때는?",
+    "options": [
+      { "text": "중심에서 즐겨", "dimension": "E", "value": 2 },
+      { "text": "구석에서 관찰", "dimension": "I", "value": 2 }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "마감이 다가오면?",
+    "options": [
+      { "text": "미리 끝내", "dimension": "J", "value": 2 },
+      { "text": "마지막에 몰아서", "dimension": "P", "value": 2 }
+    ]
+  },
+  {
+    "id": 11,
+    "question": "의사결정할 때 기준은?",
+    "options": [
+      { "text": "원칙과 공정성", "dimension": "T", "value": 2 },
+      { "text": "타인의 감정 고려", "dimension": "F", "value": 2 }
+    ]
+  },
+  {
+    "id": 12,
+    "question": "꿈을 꿀 때는?",
+    "options": [
+      { "text": "현실적 상황", "dimension": "S", "value": 2 },
+      { "text": "초현실적 내용", "dimension": "N", "value": 2 }
+    ]
+  }
+]
