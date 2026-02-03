@@ -96,6 +96,7 @@
     </div>
 
     <script src="/common.js"></script>
+    <script src="/security.js"></script>
     <script src="/assessment-engine.js"></script>
     <script>
         // 투자 성향 분석 설정
@@ -120,19 +121,19 @@
         // 데이터 로드
         async function loadData() {
             try {
-                const [questionsRes, typesRes] = await Promise.all([
-                    fetch('/data/investment-questions.json'),
-                    fetch('/data/investment-types.json')
+                const [questions, types] = await Promise.all([
+                    Security.loadAndValidate('/data/investment-questions.json', Security.validateQuestions),
+                    Security.loadAndValidate('/data/investment-types.json', Security.validateTypes)
                 ]);
 
-                questions = await questionsRes.json();
-                types = await typesRes.json();
+                window.questions = questions;
+                window.types = types;
 
                 // 총 질문 수 표시
                 document.getElementById('totalQ').textContent = questions.length;
             } catch (error) {
                 console.error('데이터 로드 실패:', error);
-                alert('데이터를 불러오는 데 실패했습니다. 다시 시도해 주세요.');
+                alert('데이터를 불러오는 데 실패했습니다. 잠시 후 다시 시도해 주세요.');
             }
         }
 
