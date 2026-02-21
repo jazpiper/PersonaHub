@@ -7,7 +7,7 @@
 ## 📦 필요한 패키지 설치
 
 ```bash
-cd /home/ubuntu/clawd/PersonaHub
+cd /home/ubuntu/project/PersonaHub
 npm install helmet helmet-csp dotenv
 npm install --save-dev dompurify
 ```
